@@ -4,7 +4,7 @@
       <ae-identicon class="avatar" :address='address'/>
       <span :class="['identity-name-position', collapsedModifier]">
         <span role="heading" :class="['identity-name', collapsedModifier]">{{name}}</span>
-        <small class="truncated-address" v-if="collapsed">{{address | shorten}} ••••••</small>
+        <small class="truncated-address" v-if="collapsed">{{address | shorten}} •••</small>
       </span>
       <div class="balances" v-if="!collapsed">
         <div class="balance token">
@@ -200,7 +200,7 @@
 
   .truncated-address {
     font-family: 'Roboto Mono', monospace;
-    font-size: 11px;
+    font-size: 14px;
     opacity: 0.67;
     display: block;
   }
