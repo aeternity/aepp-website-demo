@@ -54,7 +54,7 @@ module.exports = env => {
       new HtmlWebpackPlugin({
         inject: true,
         // chunks: ['main'],
-        title: 'Aeternity Voting',
+        title: 'Aeternity Demo',
         template: './src/index.html',
         filename: distFolder + '/index.html',
         // Avoids building twice for dev
@@ -78,7 +78,7 @@ module.exports = env => {
       new HtmlWebpackHarddiskPlugin(),
       new CleanWebpackPlugin([distFolder]),
       new VueLoaderPlugin(),
-      new BaseHrefWebpackPlugin({ baseHref: env.NODE_ENV === 'prod' ? '/aepp-hybrid-voting/' : '/' })
+      new BaseHrefWebpackPlugin({ baseHref: env.NODE_ENV === 'prod' ? '/aepp-website-demo/' : '/' })
     ],
     module: {
       rules: [

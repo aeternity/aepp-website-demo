@@ -1,5 +1,5 @@
 import Router from 'vue-router'
-import SpendTx from './views/spendTx.vue'
+import SpendTx from './views/SpendTx.vue'
 
 const routes = [
   {

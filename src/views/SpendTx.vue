@@ -1,7 +1,9 @@
 <template>
   <div>
-    <ae-card>
-      <Code v-if="isStatusCode"></Code>
+    <ae-card style="box-shadow: none">
+      <div v-if="isStatusCode">
+        <Code ref="code" @reset="reset"></Code>
+      </div>
       <div class="flex flex-row" v-else>
         <!-- PART ONE, DEMO -->
         <div class="flex-1 p-4 border-r-2">
@@ -14,12 +16,18 @@
               <AeIdentityLight address="ak_2iBPH7HUz3cSDVEUWiHg76MZJ6tZooVNBmmxcgVK6VV8KAE688" :collapsed="true"/>
             </div>
             <div class="h-40" v-if="isStatusInitial">
-              <ae-input label="Enter Amount" placeholder="0.0" aemount v-model="aemount" :error="!!error">
-                <ae-text slot="header">AE</ae-text>
-                <ae-toolbar slot="footer" v-if="error">
-                  0.005AE is the minimum amount to send!
-                </ae-toolbar>
-              </ae-input>
+              <div class="flex justify-center">
+                <div style="max-width: 400px">
+                  <ae-input label="Enter Amount" placeholder="0.0" aemount v-model="aemount" :error="!!error">
+                    <ae-text slot="header">AE</ae-text>
+                    <ae-toolbar slot="footer" v-if="error">
+                      4AE is the maximal amount to send!
+                    </ae-toolbar>
+                  </ae-input>
+                </div>
+              </div>
+
+
             </div>
             <div v-if="isStatusSuccess" class="h-48">
               <div>
@@ -64,7 +72,7 @@
               </div>
             </div>
           </div>
-          <div class="flex justify-center items-center" v-if="isStatusLoading">
+          <div class="flex justify-center h-64 items-center" v-if="isStatusLoading">
             <BiggerLoader></BiggerLoader>
           </div>
         </div>
@@ -104,8 +112,8 @@
                 Are you a developer? We provide an interactive code example for you to explore our easy to use SDK that
                 also powers this demo.
               </div>
-              <div class="flex justify-center mt-1">
-                <ae-button type="exiting" @click="switchToCode">
+              <div class="flex justify-center mt-4">
+                <ae-button type="exciting" @click="switchToCode">
                   Switch to code
                 </ae-button>
               </div>
@@ -133,20 +141,22 @@
   import AeToolbar from '@aeternity/aepp-components/src/components/ae-toolbar/ae-toolbar'
   import BiggerLoader from '../components/BiggerLoader'
   import Code from '../components/Code'
+  import AeButtonGroup from '@aeternity/aepp-components/src/components/ae-button-group/ae-button-group'
 
   const STATUS_INITIAL = 0, STATUS_LOADING = 1, STATUS_SUCCESS = 2, STATUS_CODE = 3
 
   export default {
     name: 'spendTx',
-    components: {Code, BiggerLoader, AeToolbar, AeButton, AeText, AeInput, AeIdentityLight, AeCard },
+    components: {
+      AeButtonGroup, Code, BiggerLoader, AeToolbar, AeButton, AeText, AeInput, AeIdentityLight, AeCard,
+    },
     data () {
       return {
         spendResult: null,
         aemount: '',
         error: null,
         status: STATUS_INITIAL,
-        result: JSON.parse(
-          '{"blockHash":"mh_iQ7TRDR7eXPVPWJxuRz2kDmAQC6vyWynLSZxcEzcmdPf4yPLT","blockHeight":81175,"hash":"th_qt9qN42o2zqPy4qEbRzdC8sZyVobkRzUeJeAcYYVP9qpANNuY","signatures":["sg_aTbj9FkYxiN3GNNghGWyUcDFYRQKRBUKCigReKwZwh1Hufzxpy3DZhSdfrNFE6uGcNwkGSBW6jNeT3Mps5HhRyXZEszSD"],"tx":{"amount":"10000000000000000","fee":16820000000000,"nonce":15,"payload":"","recipientId":"ak_2iBPH7HUz3cSDVEUWiHg76MZJ6tZooVNBmmxcgVK6VV8KAE688","senderId":"ak_MxBw2jMz9otWXw5pGKze7uKvS67bxixsYTgbi8crTtUa5BJKt","type":"SpendTx","version":1},"rawTx":""}'),
+        result: null,
       }
     },
     computed: {
@@ -163,14 +173,16 @@
         return this.status === STATUS_CODE
       },
     },
-    mounted() {
-      SpendController.init();
+    mounted () {
+      SpendController.init()
     },
     methods: {
       async spend () {
-        if (!this.aemount || this.aemount < 0.005) return this.error = true
+        if (!this.aemount) return this.error = true
+        const num = Number(this.aemount.replace(',', '.'))
+        if (num < 0 || num > 4) return this.error = true
         this.status = STATUS_LOADING
-        this.result = await SpendController.spend(SpendController.aeToAtoms(this.aemount).toFixed(), 'ak_2iBPH7HUz3cSDVEUWiHg76MZJ6tZooVNBmmxcgVK6VV8KAE688')
+        this.result = await SpendController.spend(SpendController.aeToAtoms(num).toFixed(), 'ak_2iBPH7HUz3cSDVEUWiHg76MZJ6tZooVNBmmxcgVK6VV8KAE688')
         this.result.rawTx = ''
         this.status = STATUS_SUCCESS
       },
@@ -183,9 +195,12 @@
       openInExplorer () {
         window.open('https://testnet.explorer.aepps.com/#/tx/' + this.result.hash)
       },
-      switchToCode() {
+      switchToCode () {
         this.status = STATUS_CODE
-      }
+      },
+      runCode () {
+        this.$refs.code.run()
+      },
     },
   }
 </script>
