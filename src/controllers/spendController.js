@@ -14,7 +14,7 @@ const spend = async (amount, recipient) => {
   return client.spend(amount, recipient);
 };
 
+const account = async () => (await getClient()).address()
 
-export default {spend};
 
-
+export default {spend, account};

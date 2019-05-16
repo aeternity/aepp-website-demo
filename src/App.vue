@@ -19,7 +19,7 @@
   .min-h-screen {
     min-height: 100vh;
     padding-bottom: 0;
-    background: #F1F4F7;
+    background: #F7FAFC;
     max-height: 100vh;
     overflow-y: auto;
   }
