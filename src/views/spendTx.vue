@@ -57,11 +57,11 @@
   import AeText from '@aeternity/aepp-components/src/components/ae-text/ae-text'
   import AeButton from '@aeternity/aepp-components/src/components/aeButton/aeButton'
   import AeToolbar from '@aeternity/aepp-components/src/components/ae-toolbar/ae-toolbar'
-  import { BigNumber } from 'bignumber.js'
+  import {BigNumber} from 'bignumber.js'
 
   export default {
     name: 'spendTx',
-    components: { AeToolbar, AeButton, AeText, AeInput, AeIdentityLight, AeCard },
+    components: {AeToolbar, AeButton, AeText, AeInput, AeIdentityLight, AeCard},
     data() {
       return {
         spendResult: null,
@@ -69,11 +69,13 @@
         error: null
       }
     },
+    mounted() {
+      SpendController.init();
+    },
     methods: {
       spend() {
-        if(!this.aemount || this.aemount < 0.005) return this.error = true
-        const sendAmount = new BigNumber(this.aemount).multipliedBy(new BigNumber('10e18'))
-        //SpendController.skiled
+        if (!this.aemount || this.aemount < 0.005) return this.error = true;
+        const sendAmount = new BigNumber(this.aemount).multipliedBy(new BigNumber('10e18'));
         SpendController.spend(sendAmount.toFixed(), "ak_2iBPH7HUz3cSDVEUWiHg76MZJ6tZooVNBmmxcgVK6VV8KAE688").then(console.log);
       }
     }
