@@ -131,22 +131,20 @@
   import AeText from '@aeternity/aepp-components/src/components/ae-text/ae-text'
   import AeButton from '@aeternity/aepp-components/src/components/aeButton/aeButton'
   import AeToolbar from '@aeternity/aepp-components/src/components/ae-toolbar/ae-toolbar'
-  import {BigNumber} from 'bignumber.js'
   import BiggerLoader from '../components/BiggerLoader'
-  import AeLabel from '@aeternity/aepp-components/src/components/aeLabel/aeLabel'
   import Code from '../components/Code'
 
   const STATUS_INITIAL = 0, STATUS_LOADING = 1, STATUS_SUCCESS = 2, STATUS_CODE = 3
 
   export default {
     name: 'spendTx',
-    components: {Code, AeLabel, BiggerLoader, AeToolbar, AeButton, AeText, AeInput, AeIdentityLight, AeCard },
+    components: {Code, BiggerLoader, AeToolbar, AeButton, AeText, AeInput, AeIdentityLight, AeCard },
     data () {
       return {
         spendResult: null,
         aemount: '',
         error: null,
-        status: STATUS_SUCCESS,
+        status: STATUS_INITIAL,
         result: JSON.parse(
           '{"blockHash":"mh_iQ7TRDR7eXPVPWJxuRz2kDmAQC6vyWynLSZxcEzcmdPf4yPLT","blockHeight":81175,"hash":"th_qt9qN42o2zqPy4qEbRzdC8sZyVobkRzUeJeAcYYVP9qpANNuY","signatures":["sg_aTbj9FkYxiN3GNNghGWyUcDFYRQKRBUKCigReKwZwh1Hufzxpy3DZhSdfrNFE6uGcNwkGSBW6jNeT3Mps5HhRyXZEszSD"],"tx":{"amount":"10000000000000000","fee":16820000000000,"nonce":15,"payload":"","recipientId":"ak_2iBPH7HUz3cSDVEUWiHg76MZJ6tZooVNBmmxcgVK6VV8KAE688","senderId":"ak_MxBw2jMz9otWXw5pGKze7uKvS67bxixsYTgbi8crTtUa5BJKt","type":"SpendTx","version":1},"rawTx":""}'),
       }
@@ -171,17 +169,14 @@
     methods: {
       async spend () {
         if (!this.aemount || this.aemount < 0.005) return this.error = true
-        const sendAmount = new BigNumber(this.aemount).multipliedBy(new BigNumber('1e18'))
         this.status = STATUS_LOADING
-        this.result = await SpendController.spend(sendAmount.toFixed(),
-          'ak_2iBPH7HUz3cSDVEUWiHg76MZJ6tZooVNBmmxcgVK6VV8KAE688')
+        this.result = await SpendController.spend(SpendController.aeToAtoms(this.aemount).toFixed(), 'ak_2iBPH7HUz3cSDVEUWiHg76MZJ6tZooVNBmmxcgVK6VV8KAE688')
         this.result.rawTx = ''
         this.status = STATUS_SUCCESS
       },
-      toAe (aetoString) {
-        return new BigNumber(aetoString).dividedBy(new BigNumber('1e18')).toFixed()
-      },
+      toAe : SpendController.atomsToAe,
       reset () {
+        SpendController.faucet();
         this.status = STATUS_INITIAL
         this.result = null
       },
