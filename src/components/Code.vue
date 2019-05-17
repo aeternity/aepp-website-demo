@@ -13,7 +13,7 @@
       </ae-button-group>
     </div>
     <ae-card v-if="result">
-        <div class="w-full h-full overflow-auto">
+        <div class="w-full h-full overflow-auto p-4">
           <prism-editor readonly :code="result"></prism-editor>
         </div>
         <div class="absolute top-0 right-0 text-5xl text-black cursor-pointer py-3 px-4" @click="result = ''">
@@ -90,13 +90,19 @@ Universal({
         const post = `})();`
 
         this.showLoading = true
-        const result = await eval(add + this.code + post)
-        this.showLoading = false
         try {
-          this.result = JSON.stringify(result, null, 2)
+          const result = await eval(add + this.code + post)
+          try {
+            this.result = JSON.stringify(result, null, 2)
+          } catch (e) {
+            this.result = String(result)
+          }
         } catch (e) {
-          this.result = String(result)
+          this.result = String(e.message)
         }
+
+        this.showLoading = false
+
       },
     },
   }
