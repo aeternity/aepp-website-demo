@@ -29,7 +29,7 @@
   import 'prismjs/themes/prism.css'
   import 'vue-prism-editor/dist/VuePrismEditor.css' // import the styles
   import PrismEditor from 'vue-prism-editor'
-  import Universal from '@aeternity/aepp-sdk/es/ae/universal'
+  import {MemoryAccount, Node, Universal} from '@aeternity/aepp-sdk/es';
   import AeButton from '@aeternity/aepp-components/src/components/aeButton/aeButton'
   import AeButtonGroup from '@aeternity/aepp-components/src/components/ae-button-group/ae-button-group'
   import AeBackdrop from '@aeternity/aepp-components/src/components/ae-backdrop/ae-backdrop'
@@ -70,14 +70,20 @@ Universal({
       }
     },
     async mounted () {
-
       this.client = await Universal({
-        url: 'https://sdk-testnet.aepps.com',
-        internalUrl: 'https://sdk-testnet.aepps.com',
-        keypair: {
-          publicKey: 'ak_MxBw2jMz9otWXw5pGKze7uKvS67bxixsYTgbi8crTtUa5BJKt',
-          secretKey: '57634f88c48e9e63732aed1adec05d01532d499658f9b9f5f625570e6ccb96832f92b03ad7c18058fd768f250e02a06bbc70d1b7083bc46978d563977fd68e4b',
-        },
+        nodes: [{
+          name: 'node',
+          instance: await Node({
+            url: 'https://testnet.aeternity.io'
+          })
+        }],
+        accounts: [
+          MemoryAccount({
+            keypair: {
+              publicKey: 'ak_MxBw2jMz9otWXw5pGKze7uKvS67bxixsYTgbi8crTtUa5BJKt',
+              secretKey: '57634f88c48e9e63732aed1adec05d01532d499658f9b9f5f625570e6ccb96832f92b03ad7c18058fd768f250e02a06bbc70d1b7083bc46978d563977fd68e4b',
+            }
+          })],
       })
       window.client = this.client
     },

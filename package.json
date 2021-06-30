@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@aeternity/aepp-components": "https://github.com/kenodressel/aepp-components.git#develop",
-    "@aeternity/aepp-sdk": "^4.7.0",
+    "@aeternity/aepp-sdk": "^8.2.1",
     "axios": "^0.18.0",
     "bignumber.js": "^8.1.1",
     "prismjs": "^1.16.0",
